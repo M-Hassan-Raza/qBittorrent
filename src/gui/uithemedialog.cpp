@@ -37,6 +37,7 @@
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPainter>
 
 #include "base/3rdparty/expected.hpp"
 #include "base/logger.h"
@@ -86,6 +87,17 @@ public:
     }
 
 private:
+    void paintEvent(QPaintEvent *event) override
+    {
+        QLabel::paintEvent(event);
+
+        if (m_currentColor.isValid())
+        {
+            QPainter painter {this};
+            painter.fillRect(contentsRect(), m_currentColor);
+        }
+    }
+
     void mouseDoubleClickEvent([[maybe_unused]] QMouseEvent *event) override
     {
         showColorDialog();
@@ -119,15 +131,11 @@ private:
     void applyColor(const QColor &color)
     {
         if (color.isValid())
-        {
-            setStyleSheet(u"#colorWidget { background-color: %1; }"_s.arg(color.name()));
             setText({});
-        }
         else
-        {
-            setStyleSheet({});
             setText(tr("System"));
-        }
+
+        update();
     }
 
     void showColorDialog()
