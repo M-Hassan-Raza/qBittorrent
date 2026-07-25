@@ -384,6 +384,7 @@ const TRACKERS_WARNING = "82a702c5-210c-412b-829f-97632d7557e9";
 
 // Map<trackerHost: String, Map<trackerURL: String, torrents: Set>>
 const trackerMap = new Map();
+let trackerMapRevision = 0;
 
 const clientData = window.qBittorrent.ClientData;
 
@@ -494,6 +495,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         }
     };
 
+    const updateSelectedTrackerFilter = (tracker) => {
+        localPreferences.set("selected_tracker", tracker);
+        selectedTracker = tracker;
+        highlightSelectedTracker();
+    };
+
     setStatusFilter = (name) => {
         const currentHash = torrentsTable.getCurrentTorrentID();
 
@@ -533,9 +540,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     setTrackerFilter = (tracker) => {
         const currentHash = torrentsTable.getCurrentTorrentID();
 
-        localPreferences.set("selected_tracker", tracker);
-        selectedTracker = tracker;
-        highlightSelectedTracker();
+        updateSelectedTrackerFilter(tracker);
         updateMainData();
 
         const newHash = torrentsTable.getCurrentTorrentID();
@@ -1025,6 +1030,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
                         let updateTags = false;
                         let updateTrackers = false;
                         let updateTorrents = false;
+                        let trackerMapChanged = false;
                         const fullUpdate = (responseJSON["full_update"] === true);
                         if (fullUpdate) {
                             torrentsTableSelectedRows = torrentsTable.selectedRowsIds();
@@ -1090,6 +1096,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
                                     trackerMap.set(host, trackerListItem);
                                 }
                                 trackerListItem.set(tracker, new Set(torrents));
+                                trackerMapChanged = true;
+                                if (selectedTracker === host)
+                                    updateTorrents = true;
                             }
                             updateTrackers = true;
                         }
@@ -1099,20 +1108,25 @@ window.addEventListener("DOMContentLoaded", async (event) => {
                                 const host = window.qBittorrent.Misc.getHost(tracker);
 
                                 const trackerTorrentMap = trackerMap.get(host);
-                                if (trackerTorrentMap !== undefined) {
-                                    trackerTorrentMap.delete(tracker);
+                                if ((trackerTorrentMap !== undefined) && trackerTorrentMap.delete(tracker)) {
+                                    trackerMapChanged = true;
+                                    if (selectedTracker === host)
+                                        updateTorrents = true;
+
                                     // Remove unused trackers
                                     if (trackerTorrentMap.size === 0) {
                                         trackerMap.delete(host);
                                         if (selectedTracker === host) {
-                                            selectedTracker = TRACKERS_ALL;
-                                            localPreferences.set("selected_tracker", selectedTracker);
+                                            updateSelectedTrackerFilter(TRACKERS_ALL);
+                                            updateTorrents = true;
                                         }
                                     }
                                 }
                             }
                             updateTrackers = true;
                         }
+                        if (trackerMapChanged)
+                            ++trackerMapRevision;
                         if (responseJSON["torrents"]) {
                             for (const key in responseJSON["torrents"]) {
                                 if (!Object.hasOwn(responseJSON["torrents"], key))
@@ -1870,7 +1884,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         }, window.qBittorrent.Misc.FILTER_INPUT_DELAY);
     });
 
-    document.getElementById("torrentsFilterToolbar").addEventListener("change", (e) => { torrentsTable.updateTable(); });
+    document.getElementById("torrentsFilterToolbar").addEventListener("change", (e) => {
+        torrentsTable.updateTable();
+    });
 
     document.getElementById("transfersTabLink").addEventListener("click", (event) => { showTransfersTab(); });
     document.getElementById("searchTabLink").addEventListener("click", (event) => { showSearchTab(); });
