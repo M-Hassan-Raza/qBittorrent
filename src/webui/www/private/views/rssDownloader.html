@@ -22,6 +22,7 @@
     #centerRssDownloaderColumn {
         width: 50%;
         float: left;
+        overflow-y: auto;
     }
 
     #rightRssDownloaderColumn {
@@ -40,6 +41,7 @@
 
     #rssDownloaderFeeds {
         height: calc(100% - 355px);
+        min-height: 150px;
         overflow: hidden;
     }
 
@@ -137,6 +139,7 @@
 
     .rssRuleShareLimitHeader {
         margin-top: 5px;
+        text-align: center;
     }
 
     #ruleShareLimitTable td {
@@ -308,7 +311,7 @@ Supports the formats: S01E01, 1x1, 2017.12.31 and 31.12.2017 (Date formats also 
                 </tbody>
             </table>
             <div class="formRow rssRuleShareLimitHeader">
-                <b>QBT_TR(Torrent Upload/Download Ratio Limiting)QBT_TR[CONTEXT=UpDownRatioDialog]</b>
+                <b>QBT_TR(Torrent Share Limits)QBT_TR[CONTEXT=TorrentOptionsDialog]</b>
             </div>
             <table class="fullWidth" id="ruleShareLimitTable">
                 <tbody>
@@ -464,14 +467,7 @@ Supports the formats: S01E01, 1x1, 2017.12.31 and 31.12.2017 (Date formats also 
 
         let rulesList = {};
         let feedList = [];
-
-        const ruleShareLimit = new window.qBittorrent.RssRuleShareLimit.Controller(
-            document,
-            () => window.parent.qBittorrent.Cache.preferences.get(), {
-                fromCategory: "QBT_TR(From category)QBT_TR[CONTEXT=TorrentShareLimitsWidget]",
-                defaultWithValue: "QBT_TR(Default (%1))QBT_TR[CONTEXT=TorrentShareLimitsWidget]",
-                fromCategoryWithValue: "QBT_TR(From category (%1))QBT_TR[CONTEXT=TorrentShareLimitsWidget]"
-            });
+        let ruleShareLimit;
 
         const exportRules = () => {
             const url = new URL("api/v2/rss/exportRules", window.location);
@@ -505,6 +501,14 @@ Supports the formats: S01E01, 1x1, 2017.12.31 and 31.12.2017 (Date formats also 
 
         const setup = () => {
             const pref = window.parent.qBittorrent.Cache.preferences.get();
+
+            ruleShareLimit = new window.qBittorrent.RssRuleShareLimit.Controller(
+                document,
+                () => window.parent.qBittorrent.Cache.preferences.get(), {
+                    fromCategory: "QBT_TR(From category)QBT_TR[CONTEXT=TorrentShareLimitsWidget]",
+                    defaultWithValue: "QBT_TR(Default (%1))QBT_TR[CONTEXT=TorrentShareLimitsWidget]",
+                    fromCategoryWithValue: "QBT_TR(From category (%1))QBT_TR[CONTEXT=TorrentShareLimitsWidget]"
+                });
 
             if (!pref.rss_auto_downloading_enabled)
                 document.getElementById("rssDownloaderDisabled").classList.remove("invisible");
