@@ -22,6 +22,7 @@
     #centerRssDownloaderColumn {
         width: 50%;
         float: left;
+        overflow-x: hidden;
         overflow-y: auto;
     }
 
@@ -326,7 +327,7 @@ Supports the formats: S01E01, 1x1, 2017.12.31 and 31.12.2017 (Date formats also 
                                 <option value="set">QBT_TR(Set to)QBT_TR[CONTEXT=UpDownRatioDialog]</option>
                             </select>
                         </td>
-                        <td>
+                        <td class="fullWidth">
                             <input disabled type="number" id="ruleShareLimitRatio" value="1.00" step=".01" min="0" aria-labelledby="ruleShareLimitRatioLabel">
                         </td>
                     </tr>
@@ -341,7 +342,7 @@ Supports the formats: S01E01, 1x1, 2017.12.31 and 31.12.2017 (Date formats also 
                                 <option value="set">QBT_TR(Set to)QBT_TR[CONTEXT=UpDownRatioDialog]</option>
                             </select>
                         </td>
-                        <td>
+                        <td class="fullWidth">
                             <input disabled type="number" id="ruleShareLimitTotalMinutes" value="1440" step="1" min="0" aria-labelledby="ruleShareLimitTotalMinutesLabel">
                         </td>
                     </tr>
@@ -356,7 +357,7 @@ Supports the formats: S01E01, 1x1, 2017.12.31 and 31.12.2017 (Date formats also 
                                 <option value="set">QBT_TR(Set to)QBT_TR[CONTEXT=UpDownRatioDialog]</option>
                             </select>
                         </td>
-                        <td>
+                        <td class="fullWidth">
                             <input disabled type="number" id="ruleShareLimitInactiveMinutes" value="1440" step="1" min="0" aria-labelledby="ruleShareLimitInactiveMinutesLabel">
                         </td>
                     </tr>
