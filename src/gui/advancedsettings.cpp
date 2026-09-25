@@ -211,7 +211,11 @@ AdvancedSettings::AdvancedSettings(IGUIApplication *app, QWidget *parent)
 
 void AdvancedSettings::showSpeedWidgetSetting()
 {
-    showSetting(ENABLE_SPEED_WIDGET);
+    scrollTo(model()->index(ENABLE_SPEED_WIDGET, PROPERTY), QAbstractItemView::PositionAtCenter);
+
+    QWidget *const widget = cellWidget(ENABLE_SPEED_WIDGET, VALUE);
+    if (widget)
+        widget->setFocus();
 }
 
 void AdvancedSettings::saveAdvancedSettings() const
@@ -1058,13 +1062,4 @@ void AdvancedSettings::addRow(const int row, const QString &text, T *widget)
         connect(widget, qOverload<int>(&QComboBox::currentIndexChanged), this, &AdvancedSettings::settingsChanged);
     else if constexpr (std::is_same_v<T, QLineEdit>)
         connect(widget, &QLineEdit::textChanged, this, &AdvancedSettings::settingsChanged);
-}
-
-void AdvancedSettings::showSetting(const int row)
-{
-    scrollTo(model()->index(row, PROPERTY), QAbstractItemView::PositionAtCenter);
-
-    QWidget *const widget = cellWidget(row, VALUE);
-    if (widget)
-        widget->setFocus();
 }

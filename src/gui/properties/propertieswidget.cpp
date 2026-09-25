@@ -33,7 +33,6 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QFuture>
-#include <QLabel>
 #include <QListWidgetItem>
 #include <QMenu>
 #include <QMessageBox>
@@ -594,15 +593,10 @@ void PropertiesWidget::configure()
                 delete m_speedWidget;
             }
 
-            const auto displayText = u"<html><head/><body><p align=\"center\">"
-                u"<b>%1</b><br/>"
-                u"<a href=\"#\">%2</a>"
-                u"</p></body></html>"_s
-                .arg(tr("Speed graphs are disabled"), tr("Open Advanced Options to enable them"));
+            const auto displayText = u"<center><b>%1</b><p><a href=\"#\">%2</a></p></center>"_s
+                .arg(tr("Speed graphs are disabled"), tr("You can enable it in Advanced Options"));
             auto *label = new QLabel(displayText, this);
             label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-            label->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
-            label->setToolTip(tr("Open Advanced Options"));
             connect(label, &QLabel::linkActivated, this, &PropertiesWidget::openAdvancedSettingsLinkActivated);
             m_speedWidget = label;
             m_ui->speedLayout->addWidget(m_speedWidget);

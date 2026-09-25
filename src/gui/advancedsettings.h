@@ -67,7 +67,6 @@ private slots:
 
 private:
     void loadAdvancedSettings();
-    void showSetting(int row);
     template <typename T> void addRow(int row, const QString &text, T *widget);
 
     QSpinBox m_spinBoxSaveResumeDataInterval, m_spinBoxSaveStatisticsInterval, m_spinBoxTorrentFileSizeLimit, m_spinBoxBdecodeDepthLimit, m_spinBoxBdecodeTokenLimit,
