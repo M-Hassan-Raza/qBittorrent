@@ -213,8 +213,7 @@ void AdvancedSettings::showSpeedWidgetSetting()
 {
     scrollTo(model()->index(ENABLE_SPEED_WIDGET, PROPERTY), QAbstractItemView::PositionAtCenter);
 
-    QWidget *const widget = cellWidget(ENABLE_SPEED_WIDGET, VALUE);
-    if (widget)
+    if (QWidget *widget = cellWidget(ENABLE_SPEED_WIDGET, VALUE))
         widget->setFocus();
 }
 
